@@ -1,20 +1,21 @@
-#include <iostream>
-
 #include "raylib.h"
 #include "elements/Button.h"
 #include "elements/ElementManager.h"
-#include "test/TestButtonClick.h"
 
 int main() {
     InitWindow(800, 600, "NimbleGUI");
-    SetTargetFPS(30);
-    // BaseElement one({90, 60}, {250, 180}, BLACK);
-    TestButtonClick testButtonClick;
-    Button two({120, 60}, {300, 200}, GREEN, testButtonClick);
+    SetTargetFPS(60);
 
-    ElementManager::createButton({90, 60}, {250, 180}, YELLOW, testButtonClick);
+    Button two({120, 60}, {0, 200}, GREEN);
+
+    ElementManager::createButton({90, 60}, {250, 180}, YELLOW);
+
+    ElementManager::buttons.at(0).addAction([](Button *button){
+        button->color = BLACK;
+    });
 
     ElementManager::addButton(two);
+
 
     while(!(WindowShouldClose())) {
         BeginDrawing();

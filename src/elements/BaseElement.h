@@ -1,7 +1,3 @@
-//
-// Created by rocketman on 27/06/2021.
-//
-
 #ifndef NIMBLEGUI_BASEELEMENT_H
 #define NIMBLEGUI_BASEELEMENT_H
 

@@ -1,7 +1,3 @@
-//
-// Created by rocketman on 27/06/2021.
-//
-
 #ifndef NIMBLEGUI_ELEMENTMANAGER_H
 #define NIMBLEGUI_ELEMENTMANAGER_H
 
@@ -38,8 +34,8 @@ namespace ElementManager {
         renderButtons();
     }
 
-    void createButton(Vector2 size, Vector2 pos, Color color, ClickEvent &event) {
-        Button tempButton(size, pos, color, event);
+    void createButton(Vector2 size, Vector2 pos, Color color) {
+        Button tempButton(size, pos, color);
         addButton(tempButton);
     }
 

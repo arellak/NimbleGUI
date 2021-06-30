@@ -9,6 +9,10 @@ link_directories(libs/raylib/lib)
 file(GLOB resources "resources/*")
 file(COPY ${resources} DESTINATION "${CMAKE_BINARY_DIR}/resources")
 
-add_executable(TESTING src/main.cpp src/elements/BaseElement.cpp src/elements/BaseElement.h src/elements/ElementManager.h src/elements/Button.cpp src/elements/Button.h src/elements/events/ClickEvent.cpp src/elements/events/ClickEvent.h src/test/TestButtonClick.cpp src/test/TestButtonClick.h)
+add_executable(TESTING
+        src/main.cpp
+        src/elements/BaseElement.cpp src/elements/BaseElement.h
+        src/elements/ElementManager.h
+        src/elements/Button.cpp src/elements/Button.h)
 
 target_link_libraries(TESTING raylib)

@@ -1,7 +1,3 @@
-//
-// Created by rocketman on 27/06/2021.
-//
-
 #include "BaseElement.h"
 
 BaseElement::BaseElement(Vector2 size, Vector2 pos, Color color) {
@@ -16,7 +12,8 @@ void BaseElement::render() {
 }
 
 void BaseElement::update(Vector2 pos) {
-    this->pos = pos;
+    this->pos.x += pos.x;
+    this->pos.y += pos.y;
 }
 
 bool BaseElement::inArea(Vector2 mousePos) {
@@ -30,6 +27,7 @@ bool BaseElement::inArea(Vector2 mousePos) {
 }
 
 void BaseElement::update(Vector2 pos, Vector2 size) {
-    this->pos = pos;
-    this->size = size;
+    update(pos);
+    this->size.x += size.x;
+    this->size.y += size.y;
 }
