@@ -39,9 +39,9 @@ namespace ElementManager {
         addButton(tempButton);
     }
 
-    void triggerClickEvents(Vector2 mousePos, bool mouseIsDown) {
+    void triggerClickEvents(Vector2 mousePos, bool mouseIsPressed, bool mouseIsRealeased) {
         for(auto &button : buttons) {
-            button.isClicked(mousePos, mouseIsDown);
+            button.isClicked(mousePos, mouseIsPressed, mouseIsRealeased);
         }
     }
 
