@@ -6,6 +6,10 @@ BaseElement::BaseElement(Vector2 size, Vector2 pos, Color color) {
     this->color = color;
 }
 
+void BaseElement::init() {
+
+}
+
 void BaseElement::render() {
     Rectangle rec{pos.x, pos.y, size.x, size.y};
     DrawRectangleRec(rec, color);

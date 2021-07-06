@@ -17,6 +17,23 @@ namespace ElementManager {
         elements.push_back(element);
     }
 
+    void initElements() {
+        for(auto &element : elements) {
+            element.init();
+        }
+    }
+
+    void initButtons() {
+        for(auto &button : buttons) {
+            button.init();
+        }
+    }
+
+    void init() {
+        initElements();
+        initButtons();
+    }
+
     void renderButtons() {
         for(auto &button : buttons) {
             button.render();
@@ -29,7 +46,7 @@ namespace ElementManager {
         }
     }
 
-    void renderAll() {
+    void render() {
         renderElements();
         renderButtons();
     }
@@ -40,7 +57,7 @@ namespace ElementManager {
     }
 
     void triggerClickEvents(Vector2 mousePos, bool mouseIsPressed, bool mouseIsRealeased) {
-        for(auto &button : buttons) {
+        for (auto &button : buttons) {
             button.isClicked(mousePos, mouseIsPressed, mouseIsRealeased);
         }
     }

@@ -13,6 +13,7 @@ public:
 
     BaseElement(Vector2 size, Vector2 pos, Color color);
 
+    virtual void init();
     virtual void render();
     void update(Vector2 pos);
     void update(Vector2 pos, Vector2 size);
