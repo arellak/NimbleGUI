@@ -10,6 +10,7 @@ public:
     Vector2 size;
     Vector2 pos;
     Color color;
+    bool visible;
 
     BaseElement(Vector2 size, Vector2 pos, Color color);
 
@@ -17,7 +18,6 @@ public:
     virtual void render();
     void update(Vector2 pos);
     void update(Vector2 pos, Vector2 size);
-
     virtual bool inArea(Vector2 mousePos);
 
 };

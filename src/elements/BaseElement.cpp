@@ -20,6 +20,13 @@ void BaseElement::update(Vector2 pos) {
     this->pos.y += pos.y;
 }
 
+void BaseElement::update(Vector2 pos, Vector2 size) {
+    update(pos);
+    this->size.x += size.x;
+    this->size.y += size.y;
+}
+
+
 bool BaseElement::inArea(Vector2 mousePos) {
     float mouseX = mousePos.x;
     float mouseY = mousePos.y;
@@ -28,10 +35,4 @@ bool BaseElement::inArea(Vector2 mousePos) {
     bool isInY = mouseY > pos.y && mouseY < pos.y + size.y;
 
     return isInX && isInY;
-}
-
-void BaseElement::update(Vector2 pos, Vector2 size) {
-    update(pos);
-    this->size.x += size.x;
-    this->size.y += size.y;
 }

@@ -3,30 +3,44 @@
 Button::Button(Vector2 size, Vector2 pos, Color color) : BaseElement(size, pos, color) {
     this->clickAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
     this->releaseAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
+
+    this->visible = true;
+
     this->font = LoadFont("resources/fonts/Monoid.ttf");
     this->text = "";
     this->fontSize = 20;
+    this->textPosition = {};
+    centerText();
 }
 
 Button::Button(Vector2 size, Vector2 pos, Color color, std::string fontName) : BaseElement(size, pos, color) {
+    this->clickAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
+    this->releaseAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
+
+    this->visible = true;
+
     std::string fontPath("resources/fonts/");
     fontPath.append(fontName);
     this->font = LoadFont(fontPath.c_str());
+    this->text = "";
+    this->fontSize = 20;
+    this->textPosition = {};
+    centerText();
 }
 
 void Button::init() {
-    BaseElement::init();
+
 }
 
 void Button::render() {
+    if(!visible) return;
     BaseElement::render();
-    DrawTextEx(this->font, this->text.c_str(), this->pos, this->fontSize, 1, BLACK);
+    DrawTextEx(this->font, this->text.c_str(), this->textPosition, (float) this->fontSize, 1, BLACK);
 }
 
 bool Button::inArea(Vector2 mousePos) {
     return BaseElement::inArea(mousePos);
 }
-
 
 void Button::isClicked(Vector2 mousePos, bool mouseIsPressed, bool mouseIsReleased) {
     if(mouseIsPressed && inArea(mousePos) && clickAction != nullptr) {
@@ -36,7 +50,8 @@ void Button::isClicked(Vector2 mousePos, bool mouseIsPressed, bool mouseIsReleas
     }
 }
 
-void Button::addAction(Button::actionOnClick onClickAction = [](Button *button){}, Button::actionOnRelease onReleaseAction = [](Button *button){}) {
+void Button::addAction(Button::actionOnClick onClickAction = [](Button *button){},
+                       Button::actionOnRelease onReleaseAction = [](Button *button){}) {
     this->clickAction = onClickAction;
     this->releaseAction = onReleaseAction;
 }
@@ -106,7 +121,14 @@ void Button::setText(std::string text, int fontSize) {
  */
 bool Button::textInArea() {
     Vector2 textSize = TextSize(this->text);
-    return (textSize.x < this->size.x) && (textSize.y < this->size.y);
+    float biggestElementX = this->pos.x + this->size.x;
+    float biggestElementY = this->pos.y + this->size.y;
+
+    float biggestFontX = this->textPosition.x + textSize.x;
+    float biggestFontY = this->textPosition.y + textSize.y;
+
+
+    return (biggestFontX < biggestElementX) && (biggestFontY < biggestElementY);
 }
 
 /**
@@ -116,7 +138,14 @@ bool Button::textInArea() {
  */
 bool Button::textInArea(std::string txt) {
     Vector2 textSize = TextSize(txt);
-    return (textSize.x < this->size.x) && (textSize.y < this->size.y);
+    float biggestElementX = this->pos.x + this->size.x;
+    float biggestElementY = this->pos.y + this->size.y;
+
+    float biggestFontX = this->textPosition.x + textSize.x;
+    float biggestFontY = this->textPosition.y + textSize.y;
+
+
+    return (biggestFontX < biggestElementX) && (biggestFontY < biggestElementY);
 }
 
 /**
@@ -143,5 +172,6 @@ void Button::cutText() {
 }
 
 void Button::centerText() {
-    
+    this->textPosition.x = (this->pos.x + (this->size.x/4));
+    this->textPosition.y = (this->pos.y + (this->size.y/4));
 }

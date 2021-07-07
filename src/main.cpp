@@ -7,11 +7,9 @@ int main() {
     SetTargetFPS(60);
 
 
-    ElementManager::createButton({90, 60}, {250, 180}, BLUE);
+    Button &button = ElementManager::createButton({150, 88}, {250, 180}, BLUE);
 
-    Button &button = ElementManager::buttons.at(0);
-
-    button.setText("Submit", 70);
+    button.setText("Submit", 30);
     button.addAction(
             [](Button *button){
                 if(button->checkColor(BLUE)) {
@@ -24,8 +22,6 @@ int main() {
                 }
             }
     );
-
-    ElementManager::init();
 
     while(!(WindowShouldClose())) {
         BeginDrawing();
