@@ -1,31 +1,30 @@
-//
-// Created by rocketman on 07/07/2021.
-//
-
 #include "DropDown.h"
-
-DropDown::DropDown(Vector2 size, Vector2 pos, Color color)
-        : Button(size, pos, color) {
-    // this->activeElement = Button({}, {}, BLACK);
-    unfoldAction = [](DropDown* dropDown) {
-        if(dropDown->unfolded) {
-            for(auto &element : dropDown->elements) {
-                element.visible = true;
-            }
-        } else {
-            for(auto &element : dropDown->elements) {
-                element.visible = false;
-            }
-            dropDown->activeElement->visible = true;
-        }
-        dropDown->unfolded = !dropDown->unfolded;
-    };
-}
 
 DropDown::DropDown(Vector2 size, Vector2 pos, Color color, std::string fontName)
         : Button(size, pos, color, fontName) {
-    // this->activeElement = Button(this->size, this->pos, this->color);
-}
+
+    unfolded = false;
+    if(text.empty()) {
+        activeElement = new Button(size, pos, color, this->fontName);
+        activeElement->setText("Test", 20); // for testing purposes
+    }
+    elements.push_back(activeElement);
+
+    unfoldAction = [](DropDown* dropDown) {
+        if(dropDown->unfolded) {
+            for(auto &element : dropDown->elements) {
+                element->visible = true;
+            }
+        } else {
+            for(auto &element : dropDown->elements) {
+                element->visible = false;
+            }
+            dropDown->activeElement->visible = true;
+        }
+
+        dropDown->unfolded = !dropDown->unfolded;
+    };
+} // so gefühlt hat der gerade rumgeheult, weil diese clean Methode in "BaseElement" virtual ist
 
 void DropDown::init() {
 
@@ -34,37 +33,42 @@ void DropDown::init() {
 void DropDown::render() {
     if(unfolded) {
         for(auto &element : elements) {
-            element.render();
+            element->render();
         }
     } else {
         activeElement->render();
     }
 }
 
+// TODO if this->elements.size is 0 when this method is called, the given element should be the "activeElement"
 void DropDown::addElement(std::string value) {
-    Button tempButton(this->size, this->pos, this->color);
-    if(this->fontSize > 0) {
-        tempButton.setText(value, this->fontSize);
+    float latestY = elements.at(elements.size()-1)->pos.y;
+    Vector2 newPos{pos.x, latestY+size.y};
+
+    Button tempButton(size, newPos, color, fontName);
+    if(fontSize > 0) {
+        tempButton.setText(value, fontSize);
     } else {
         tempButton.setText(value, 20);
     }
 
-    this->elements.push_back(tempButton);
+    elements.push_back(&tempButton);
 }
 
-void DropDown::addAction(DropDown::actionOnClick onClickAction, DropDown::actionOnRelease onReleaseAction) {
-    clickAction = onClickAction;
-    releaseAction = onReleaseAction;
-}
-
-void DropDown::addOnClickAction(DropDown::actionOnClick onClickAction) {
-    clickAction = onClickAction;
-}
-
-void DropDown::addOnReleaseAction(DropDown::actionOnRelease onReleaseAction) {
-    releaseAction = onReleaseAction;
-}
-
-void DropDown::addUnfoldAction(DropDown::actionOnUnfold onUnfoldAction) {
+void DropDown::addAction(DropDown::actionOnUnfold onUnfoldAction) {
     unfoldAction = onUnfoldAction;
+}
+
+void DropDown::isClicked(Vector2 mousePos, bool mouseIsPressed) {
+    if(mouseIsPressed && inArea(mousePos) && unfoldAction != nullptr) {
+        unfoldAction(this);
+    }
+}
+
+void DropDown::clean() {
+    for(auto &element : elements) {
+        if(element == nullptr) continue;
+        free(element);
+    }
+    printf("Cleared DropDowns!\n");
 }

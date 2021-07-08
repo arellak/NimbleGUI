@@ -1,26 +1,13 @@
 #include "Button.h"
 
-Button::Button(Vector2 size, Vector2 pos, Color color) : BaseElement(size, pos, color) {
-    this->clickAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
-    this->releaseAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
-
-    this->visible = true;
-
-    this->font = LoadFont("resources/fonts/Monoid.ttf");
-    this->text = "";
-    this->fontSize = 20;
-    this->textPosition = {};
-    centerText();
-}
-
 Button::Button(Vector2 size, Vector2 pos, Color color, std::string fontName) : BaseElement(size, pos, color) {
     this->clickAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
-    this->releaseAction = [](Button *button) {}; // default action so the program doesn't crash when there is no user defined action
 
     this->visible = true;
 
     std::string fontPath("resources/fonts/");
     fontPath.append(fontName);
+    this->fontName = fontName;
     this->font = LoadFont(fontPath.c_str());
     this->text = "";
     this->fontSize = 20;
@@ -42,26 +29,14 @@ bool Button::inArea(Vector2 mousePos) {
     return BaseElement::inArea(mousePos);
 }
 
-void Button::isClicked(Vector2 mousePos, bool mouseIsPressed, bool mouseIsReleased) {
+void Button::isClicked(Vector2 mousePos, bool mouseIsPressed) {
     if(mouseIsPressed && inArea(mousePos) && clickAction != nullptr) {
         clickAction(this);
-    } else if(mouseIsReleased && inArea(mousePos) && releaseAction != nullptr) {
-        releaseAction(this);
     }
 }
 
-void Button::addAction(Button::actionOnClick onClickAction = [](Button *button){},
-                       Button::actionOnRelease onReleaseAction = [](Button *button){}) {
+void Button::addAction(Button::actionOnClick onClickAction = [](Button *button){}) {
     this->clickAction = onClickAction;
-    this->releaseAction = onReleaseAction;
-}
-
-void Button::addOnClickAction(Button::actionOnClick onClickAction) {
-    this->clickAction = onClickAction;
-}
-
-void Button::addOnReleaseAction(Button::actionOnRelease onReleaseAction) {
-    this->releaseAction = onReleaseAction;
 }
 
 /**
@@ -174,4 +149,8 @@ void Button::cutText() {
 void Button::centerText() {
     this->textPosition.x = (this->pos.x + (this->size.x/4));
     this->textPosition.y = (this->pos.y + (this->size.y/4));
+}
+
+void Button::clean() {
+    printf("Cleared Button!\n");
 }

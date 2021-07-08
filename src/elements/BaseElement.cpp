@@ -36,3 +36,6 @@ bool BaseElement::inArea(Vector2 mousePos) {
 
     return isInX && isInY;
 }
+void Gui::renderElements() {
+
+}
