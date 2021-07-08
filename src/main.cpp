@@ -8,7 +8,7 @@ static Gui::Panel p;
 
 int main() {
     InitWindow(800, 600, "NimbleGUI");
-    SetTargetFPS(60);
+    SetTargetFPS(25); /** Lower the Framerate, which makes debugging and testing much easier with UIs **/
 
     Gui::initialise();
 
@@ -25,4 +25,8 @@ int main() {
     CloseWindow();
 
     return 0;
+}
+
+void testCode(){
+    p = Gui::createPanel()
 }
