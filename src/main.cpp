@@ -15,7 +15,7 @@ int main() {
         ClearBackground(DARKGRAY);
 
         Gui::renderElements();
-        Input::handle();
+        // Input::handle();
 
 
         EndDrawing();
@@ -26,5 +26,5 @@ int main() {
 }
 
 void testCode(){
-    p = Gui::createPanel()
+    p = Gui::createPanel();
 }
