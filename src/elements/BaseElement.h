@@ -103,44 +103,4 @@ namespace Gui {
 
 
 
-/** --------------- Input File .h ----------------- */
-
-
-#include <vector>
-
-namespace Input{
-    std::vector<Rectangle*> ui_collision;
-    Gui::ElementBase* focused;
-    bool dragging = false;
-
-    void registerContainer(Gui::Window* window);
-    void registr();
-    void handle();
-    void dragElement();
-}
-
-void checkCollisions(){
-    /** Check if MouseClick is hitting a UI Element or Window and if so focus it / throw their or in general Events **/
-
-}
-
-void Input::handle(){
-    if(IsMouseButtonPressed(0)){
-        checkCollisions();
-    }
-    if(IsMouseButtonPressed(0)){
-        /** Could be combined inside checkCollisions, but can stand on its own; Since, in order to being able to drag
-         * the element needs to be in focus anyway it doesn't require any Parameters, since focussed Widget is already saved
-         */
-        dragElement();
-    }
-}
-
-void Input::registr(){
-    auto* rect = new Rectangle();
-
-    ui_collision.push_back(rect);
-}
-
-
 

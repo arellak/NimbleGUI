@@ -13,6 +13,6 @@ add_executable(TESTING
         src/main.cpp
         src/elements/BaseElement.cpp src/elements/BaseElement.h
         src/elements/ElementManager.h
-        src/elements/Button.cpp src/elements/Button.h src/elements/DropDown.cpp src/elements/DropDown.h)
+        src/elements/Input.cpp src/elements/Input.h)
 
 target_link_libraries(TESTING raylib)

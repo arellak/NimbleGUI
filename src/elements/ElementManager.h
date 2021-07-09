@@ -1,15 +1,12 @@
 #ifndef NIMBLEGUI_ELEMENTMANAGER_H
 #define NIMBLEGUI_ELEMENTMANAGER_H
 
-#include "Button.h"
-#include "DropDown.h"
+#include "BaseElement.h"
 #include <vector>
 
 namespace ElementManager {
 
     std::vector<BaseElement> elements;
-
-
 
 }
 

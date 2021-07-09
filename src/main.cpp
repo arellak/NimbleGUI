@@ -2,8 +2,6 @@
 #include "elements/BaseElement.h"
 #include "elements/Input.h"
 
-
-
 static Gui::Panel p;
 
 int main() {
