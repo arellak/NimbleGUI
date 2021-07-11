@@ -16,7 +16,7 @@ void Input::handle(){
     }
 }
 
-void Input::registr(){
+void Input::registr(Gui::ElementBase &element){
     auto* rect = new Rectangle();
 
     ui_collision.push_back(rect);

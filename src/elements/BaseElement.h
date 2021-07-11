@@ -1,9 +1,10 @@
 #ifndef NIMBLEGUI_BASEELEMENT_H
 #define NIMBLEGUI_BASEELEMENT_H
 
-#include "raylib.h"
 #include <iostream>
 #include <vector>
+#include "raylib.h"
+#include "Input.h"
 
 namespace Gui {
 
@@ -67,6 +68,7 @@ namespace Gui {
         Button(Vector2 pos, Vector2 dimension);
 
         bool checkColor(Color newColor);
+        void update(Vector2 pos) override;
     };
 
     class DropDown : public Button {
@@ -77,7 +79,7 @@ namespace Gui {
         DropDown(Vector2 pos);
         DropDown(Vector2 pos, Vector2 dimension);
 
-        void addElement(std::string value);
+        void addElement(const char* value);
     };
 
     class Window: public ElementBase{
@@ -89,7 +91,7 @@ namespace Gui {
         explicit Window(Vector2 pos);
 
         void addElement(ElementBase* element); /** Careful before adding with certain Values - since Positions like x,y of a child inside a container like window are relative which is why a Button(10,10) is not on the left top corner of the program but on the parenting/enclosing container  **/
-        void updateElements();
+        void updateElements(void);
 
 
         void update(Vector2 pos) override; /** Could possible just call updateElements, after updating its own graphics **/
@@ -104,8 +106,9 @@ namespace Gui {
     Font textFont;
 
     Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/
+
     void renderElements(void);
-    void initialise();
+    void initialise(void);
 
 }
 #endif //NIMBLEGUI_BASEELEMENT_H

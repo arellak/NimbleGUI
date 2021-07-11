@@ -59,7 +59,9 @@ Gui::Button::Button(Vector2 pos) {
 }
 
 Gui::Button::Button(Vector2 pos, Vector2 dimension) {
-    Button(pos);
+    type = ElementType::BUTTON;
+    text = "";
+    this->pos = pos;
     this->dimension = dimension;
 }
 
@@ -85,9 +87,9 @@ Gui::DropDown::DropDown(Vector2 pos, Vector2 dimension) : Button(pos, dimension)
     type = ElementType::DROP_DOWN;
 }
 
-void Gui::DropDown::addElement(std::string value) {
+void Gui::DropDown::addElement(const char* value) {
     Button tempButton(Vector2{}, Vector2{});
-    tempButton.text = value;
+    tempButton.text.text = value;
     elements.push_back(&tempButton);
 }
 
@@ -102,8 +104,8 @@ Gui::Window::Window(Vector2 pos) {
 
 void Gui::Window::addElement(ElementBase* element) {
     // TODO set the the childs position relative to windows position
-    element.pos.x += pos.x;
-    element.pos.y += pos.y;
+    element->pos.x += pos.x;
+    element->pos.y += pos.y;
     elements.push_back(element);
 }
 
@@ -122,17 +124,18 @@ void Gui::Window::update(Vector2 pos) {
 
 /* ------------------------------------------------ */
 void Gui::initialise() {
-    textFont = LoadFont("resources/fonts/Monoid.ttf");
+    textFont = LoadFont("resources/fonts/Monoid.ttf"); // TODO load font from some kind of config?
 }
 
-void Gui::createPanel(int x, int y, int width, int height) {
-    Panel p();
-
-    // Input::registr(p);
+Gui::Panel* Gui::createPanel(int x, int y, int width, int height) {
+    Panel* p = new Panel((float) x, (float) y);
+    p->dimension = Vector2{(float) width, (float) height};
+    Input::registr(p);
+    return p;
 }
 
 void Gui::renderElements() {
     for(auto &element : elements) {
-        element.render();
+
     }
 }
