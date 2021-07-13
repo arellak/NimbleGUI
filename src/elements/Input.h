@@ -2,6 +2,7 @@
 #define NIMBLEGUI_INPUT_H
 
 #include <vector>
+#include <memory>
 #include "BaseElement.h"
 
 namespace Input {

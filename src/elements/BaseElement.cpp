@@ -16,51 +16,33 @@ Gui::Panel::Panel(float x, float y) {
     type = ElementType::PANEL;
 }
 
-Gui::Panel::Panel(Vector2 pos) {
-    Panel(pos.x, pos.y);
+Gui::Panel::Panel(Vector2 pos) : Panel(pos.x, pos.y){
+
 }
 
-/* TODO write method where borderColor can be updated? */
-void Gui::Panel::update(Vector2 pos) {
-    this->pos.x += pos.x;
-    this->pos.y += pos.y;
+void Gui::Panel::update() {
+
 }
 
-Gui::Label::Label(const char *text) {
-    Label(0, 0);
-    this->text = text;
-}
-
-Gui::Label::Label(float x, float y) {
+Gui::Label::Label(float x, float y, const char *text) {
     pos = Vector2{x, y};
     text = "Label";
     textSize = 20;
     type = ElementType::LABEL;
-}
-
-Gui::Label::Label(float x, float y, const char *text) {
-    Label(x, y);
     this->text = text;
 }
 
-Gui::Label::Label(Vector2 pos) {
-    Label(pos.x, pos.y);
+Gui::Label::Label(Vector2 pos, const char* text) : Label(pos.x, pos.y, text){
+
 }
 
-void Gui::Label::update(Vector2 pos) {
-    this->pos.x += pos.x;
-    this->pos.y += pos.y;
-}
+void Gui::Label::update() {
 
-Gui::Button::Button(Vector2 pos) {
-    type = ElementType::BUTTON;
-    text = "";
-    this->pos = pos;
 }
 
 Gui::Button::Button(Vector2 pos, Vector2 dimension) {
     type = ElementType::BUTTON;
-    text = "";
+    text = Label(pos, ""); // TODO do something idk
     this->pos = pos;
     this->dimension = dimension;
 }
@@ -77,9 +59,8 @@ bool Gui::Button::checkColor(Color newColor) {
     return (oldR == newR) && (oldG == newG) && (oldB == newB);
 }
 
-Gui::DropDown::DropDown(Vector2 pos) : Button(pos) {
-    unfolded = false;
-    type = ElementType::DROP_DOWN;
+void Gui::Button::update() {
+
 }
 
 Gui::DropDown::DropDown(Vector2 pos, Vector2 dimension) : Button(pos, dimension) {
@@ -93,31 +74,37 @@ void Gui::DropDown::addElement(const char* value) {
     elements.push_back(&tempButton);
 }
 
-Gui::Window::Window(float x, float y) {
-    pos = Vector2{x, y};
+Gui::Window::Window(float width, float height, const char* title) {
+    dimension = Vector2{width, height};
+    pos = Vector2{0, 0};
     type = ElementType::WINDOW;
+    this->title = title;
+    hasBorders = false;
+    borderColor = BLACK;
+
+    InitWindow((int) dimension.x, (int) dimension.y, title);
+    SetTargetFPS(25);
+
 }
 
-Gui::Window::Window(Vector2 pos) {
-    Window(pos.x, pos.y); 
+Gui::Window::Window(Vector2 pos, const char* title) : Window(pos.x, pos.y, title) {
+
 }
 
 void Gui::Window::addElement(ElementBase* element) {
-    // TODO set the the childs position relative to windows position
     element->pos.x += pos.x;
     element->pos.y += pos.y;
     elements.push_back(element);
 }
 
 void Gui::Window::updateElements() {
-    // TODO Update idk?
-    for(auto element : elements) {
-        element->update(); // TODO add parameter
+    for(auto &element : elements) {
+        element->update();
     }
 }
 
-void Gui::Window::update(Vector2 pos) {
-    this->pos = pos;
+void Gui::Window::update() {
+
     updateElements();
 }
 
@@ -128,14 +115,14 @@ void Gui::initialise() {
 }
 
 Gui::Panel* Gui::createPanel(int x, int y, int width, int height) {
-    Panel* p = new Panel((float) x, (float) y);
-    p->dimension = Vector2{(float) width, (float) height};
-    Input::registr(p);
-    return p;
+    std::shared_ptr<Panel> panel = std::make_shared<Panel>((float) x, (float) y);
+    panel->dimension = Vector2{(float) width, (float) height};
+    // Input::registr(panel.get());
+    return panel.get();
 }
 
 void Gui::renderElements() {
     for(auto &element : elements) {
-
+        // TODO idk? the rendering already happens in the updateElements method
     }
 }

@@ -3,8 +3,9 @@
 
 #include <iostream>
 #include <vector>
+#include <memory>
 #include "raylib.h"
-#include "Input.h"
+//#include "Input.h"
 
 namespace Gui {
 
@@ -27,8 +28,8 @@ namespace Gui {
         Color color;
         bool visible;
 
-        ElementBase(); /** Initialise every Attribute with fixed default values, which will avoid a lot of potential errors and annoying bug searches  **/
-        virtual void update(Vector2 pos) = 0;
+        ElementBase(void); /** Initialise every Attribute with fixed default values, which will avoid a lot of potential errors and annoying bug searches  **/
+        virtual void update(void) = 0;
 
     };
 
@@ -40,7 +41,7 @@ namespace Gui {
         Panel(float x, float y);
         explicit Panel(Vector2 pos);
 
-        void update(Vector2 pos) override;
+        void update(void) override;
     };
 
     class Label: public ElementBase{
@@ -48,12 +49,10 @@ namespace Gui {
         const char* text;
         int textSize;
 
-        Label(const char *text);
-        Label(float x, float y);
-        Label(float x, float y, const char * text);
-        explicit Label(Vector2 pos);
+        Label(float x, float y, const char* text);
+        Label(Vector2 pos, const char* text);
 
-        void update(Vector2 pos) override;
+        void update(void) override;
     };
 
     /*
@@ -62,13 +61,12 @@ namespace Gui {
      */
     class Button : public ElementBase {
     public:
-        Label text = "";
+        Label text = Label(Vector2{}, "");
 
-        Button(Vector2 pos);
         Button(Vector2 pos, Vector2 dimension);
 
         bool checkColor(Color newColor);
-        void update(Vector2 pos) override;
+        void update(void) override;
     };
 
     class DropDown : public Button {
@@ -76,7 +74,6 @@ namespace Gui {
         std::vector<Button*> elements;
         bool unfolded;
 
-        DropDown(Vector2 pos);
         DropDown(Vector2 pos, Vector2 dimension);
 
         void addElement(const char* value);
@@ -86,15 +83,16 @@ namespace Gui {
     public:
         bool hasBorders;
         Color borderColor;
+        const char* title;
 
-        Window(float x, float y); /** On each Constructor of Widgets/Elements make sure to also set its proper ElementType  **/
-        explicit Window(Vector2 pos);
+        Window(float width, float height, const char* title); /** On each Constructor of Widgets/Elements make sure to also set its proper ElementType  **/
+        Window(Vector2 dimension, const char* title);
 
         void addElement(ElementBase* element); /** Careful before adding with certain Values - since Positions like x,y of a child inside a container like window are relative which is why a Button(10,10) is not on the left top corner of the program but on the parenting/enclosing container  **/
         void updateElements(void);
 
 
-        void update(Vector2 pos) override; /** Could possible just call updateElements, after updating its own graphics **/
+        void update(void) override; /** Could possible just call updateElements, after updating its own graphics **/
 
     private:
         std::vector<ElementBase*> elements;

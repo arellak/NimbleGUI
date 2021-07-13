@@ -4,3 +4,5 @@
 /libs/*
 .idea/*
 resources/*
+src/CMakeFiles/*
+src/CMakeCache.txt

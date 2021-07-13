@@ -17,9 +17,9 @@ void Input::handle(){
 }
 
 void Input::registr(Gui::ElementBase &element){
-    auto* rect = new Rectangle();
+    std::shared_ptr<Rectangle> rect = std::make_shared<Rectangle>();
 
-    ui_collision.push_back(rect);
+    ui_collision.push_back(rect.get());
 }
 
 void Input::checkCollisions(){

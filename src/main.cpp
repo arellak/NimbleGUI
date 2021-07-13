@@ -2,7 +2,7 @@
 #include "elements/BaseElement.h"
 #include "elements/Input.h"
 
-static Gui::Panel p;
+static Gui::Window window();
 
 int main() {
     InitWindow(800, 600, "NimbleGUI");
@@ -17,14 +17,10 @@ int main() {
         Gui::renderElements();
         // Input::handle();
 
-
         EndDrawing();
     }
+
     CloseWindow();
 
     return 0;
-}
-
-void testCode(){
-    p = Gui::createPanel();
 }
