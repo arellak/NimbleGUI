@@ -72,6 +72,7 @@ namespace Gui {
     public:
         std::vector<Button*> elements;
         bool unfolded;
+        Button* active;
 
         DropDown(Vector2 pos, Vector2 dimension);
         ~DropDown(void);
@@ -102,7 +103,6 @@ namespace Gui {
     };
 
     extern std::vector<ElementBase*> elements;
-
     extern Font textFont;
 
     Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/

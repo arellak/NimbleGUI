@@ -25,7 +25,7 @@ Gui::Panel::Panel(Vector2 pos) : Panel(pos.x, pos.y){
 }
 
 void Gui::Panel::update(void) {
-
+    DrawRectangle(pos.x, pos.y, dimension.x, dimension.y, color);
 }
 
 Gui::Label::Label(const char* text) : Label(0, 0, text){
@@ -67,7 +67,7 @@ bool Gui::Button::checkColor(Color newColor) {
 }
 
 void Gui::Button::update(void) {
-
+    DrawRectangle(pos.x, pos.y, dimension.x, dimension.y, color);
 }
 
 Gui::DropDown::DropDown(Vector2 pos, Vector2 dimension) : Button(pos, dimension) {
@@ -88,7 +88,13 @@ void Gui::DropDown::addElement(const char* value) {
 }
 
 void Gui::DropDown::update(void) {
-
+    if(unfolded) {
+        for(auto &element : elements) {
+            element->update();
+        }
+    } else {
+        active->update();
+    }
 }
 
 Gui::Window::Window(float width, float height, const char* title) {
