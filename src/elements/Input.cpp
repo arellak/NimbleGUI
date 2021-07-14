@@ -5,6 +5,7 @@ std::vector<Gui::Window*> Input::windows;
 Gui::ElementBase* Input::focused;
 bool Input::dragging = false;
 
+
 void Input::dragElement() {
 
 }

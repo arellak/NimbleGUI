@@ -13,19 +13,69 @@ Gui::ElementBase::ElementBase(void) {
     type = ElementType::BASE;
 }
 
-Gui::Panel::Panel(float x, float y) : ElementBase(){
-    pos = Vector2{x, y};
+Gui::Taskbar::Taskbar(int x, int y, int width, int height) : ElementBase() {
+    pos = Vector2{(float) x, (float) y};
+    dimension = Vector2{(float) width, (float) height/10};
+    type = ElementType::TASKBAR;
+}
+
+void Gui::Taskbar::update(void) {
+    if(visible) {
+        DrawRectangle((int) pos.x, (int) (pos.y - dimension.y), (int) dimension.x, (int) dimension.y, color);
+    }
+}
+
+Gui::Panel::Panel(int x, int y, int width, int height) : ElementBase() {
+    pos = Vector2{(float) x, (float) y};
+    dimension = Vector2{(float) width, (float) height};
     hasBorders = false;
     borderColor = WHITE;
     type = ElementType::PANEL;
+    taskbar = new Taskbar((int) pos.x, (int) pos.y, (int) dimension.x, (int) dimension.y);
 }
 
-Gui::Panel::Panel(Vector2 pos) : Panel(pos.x, pos.y){
+Gui::Panel::Panel(int x, int y) : Panel(x, y, 0, 0){
+}
 
+Gui::Panel::Panel(Vector2 pos) : Panel((int) pos.x, (int) pos.y){
+
+}
+
+void Gui::Panel::addElement(ElementBase *element) {
+    float elementX = element->pos.x;
+    float elementY = element->pos.y;
+    float panelWidth = dimension.x;
+    float panelHeight = dimension.y;
+
+    // Check if given element is in the boundaries of the Panel
+    if(elementX > panelWidth || elementX < 0 || elementY > panelHeight || elementY < 0) {
+        // TODO add some kind of error message
+        return;
+    }
+
+
+    element->pos.x += pos.x;
+    element->pos.y += pos.y;
+
+    if(element->type == ElementType::BUTTON) {
+        auto* button = dynamic_cast<Button*>(element);
+        button->text.pos.x += pos.x;
+        button->text.pos.y += pos.y;
+    }
+
+    elements.push_back(element);
 }
 
 void Gui::Panel::update(void) {
-    DrawRectangle(pos.x, pos.y, dimension.x, dimension.y, color);
+    if(visible) {
+        DrawRectangle((int) pos.x, (int) pos.y, (int) dimension.x, (int) dimension.y, color);
+
+        for(auto &element : elements) {
+            element->update();
+        }
+
+        taskbar->update();
+    }
 }
 
 Gui::Label::Label(const char* text) : Label(0, 0, text){
@@ -33,7 +83,6 @@ Gui::Label::Label(const char* text) : Label(0, 0, text){
 
 Gui::Label::Label(float x, float y, const char *text) : ElementBase() {
     pos = Vector2{x, y};
-    text = "Label";
     textSize = 20;
     type = ElementType::LABEL;
     this->text = text;
@@ -44,56 +93,22 @@ Gui::Label::Label(Vector2 pos, const char* text) : Label(pos.x, pos.y, text){
 }
 
 void Gui::Label::update(void) {
-    DrawTextEx(textFont, text, pos, (float) textSize, 1, color);
+    if(visible) {
+        DrawTextEx(textFont, text, pos, (float) textSize, 1, color);
+    }
 }
 
 Gui::Button::Button(Vector2 pos, Vector2 dimension) : ElementBase() {
     type = ElementType::BUTTON;
-    text = Label(pos, ""); // TODO do something idk
+    text = Label(pos, "");
     this->pos = pos;
     this->dimension = dimension;
 }
 
-bool Gui::Button::checkColor(Color newColor) {
-    unsigned char oldR = this->color.r;
-    unsigned char oldG = this->color.g;
-    unsigned char oldB = this->color.b;
-
-    unsigned char newR = newColor.r;
-    unsigned char newG = newColor.g;
-    unsigned char newB = newColor.b;
-
-    return (oldR == newR) && (oldG == newG) && (oldB == newB);
-}
-
 void Gui::Button::update(void) {
-    DrawRectangle(pos.x, pos.y, dimension.x, dimension.y, color);
-}
-
-Gui::DropDown::DropDown(Vector2 pos, Vector2 dimension) : Button(pos, dimension) {
-    unfolded = false;
-    type = ElementType::DROP_DOWN;
-}
-
-Gui::DropDown::~DropDown(void) {
-    for(auto &element : elements) {
-        free(element);
-    }
-}
-
-void Gui::DropDown::addElement(const char* value) {
-    Button tempButton(Vector2{}, Vector2{});
-    tempButton.text.text = value;
-    elements.push_back(&tempButton);
-}
-
-void Gui::DropDown::update(void) {
-    if(unfolded) {
-        for(auto &element : elements) {
-            element->update();
-        }
-    } else {
-        active->update();
+    if(visible) {
+        DrawRectangle((int) pos.x, (int) pos.y, (int) dimension.x, (int) dimension.y, color);
+        text.update();
     }
 }
 
@@ -141,16 +156,22 @@ void Gui::initialise(void) {
     textFont = LoadFont("resources/fonts/Monoid.ttf"); // TODO load font from some kind of config?
 }
 
+Gui::Button* Gui::createButton(int x, int y, int width, int height) {
+    auto* button = new Button(Vector2{(float) x, (float) y}, Vector2{(float) width, (float) height});
+    Input::registr(*button);
+
+    return button;
+}
+
 Gui::Panel* Gui::createPanel(int x, int y, int width, int height) {
-    auto* panel = new Panel((float) x, (float) y);
-    panel->dimension = Vector2{(float) width, (float) height};
+    auto* panel = new Panel(x, y, width, height);
     Input::registr(*panel);
     return panel;
 }
 
 Gui::Window* Gui::createWindow(int width, int height, const char* title) {
     // std::shared_ptr<Window> window = std::make_shared<Window>(width, height, title);
-    Window* window = new Window((float) width, (float) height, title);
+    auto* window = new Window((float) width, (float) height, title);
     Input::registerContainer(window);
     return window;
 }
@@ -167,4 +188,16 @@ void Gui::cleanUp(void) {
     for(auto &element : elements) {
         free(element);
     }
+}
+
+bool Gui::checkColor(Color first, Color second) {
+    unsigned char oldR = first.r;
+    unsigned char oldG = first.g;
+    unsigned char oldB = first.b;
+
+    unsigned char newR = second.r;
+    unsigned char newG = second.g;
+    unsigned char newB = second.b;
+
+    return (oldR == newR) && (oldG == newG) && (oldB == newB);
 }

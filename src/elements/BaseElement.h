@@ -12,7 +12,7 @@ namespace Gui {
         WINDOW = 0,
         BUTTON = 1,
         LABEL = 2,
-        DROP_DOWN = 3,
+        TASKBAR = 3,
         PANEL = 4,
         BASE = 5
     };
@@ -31,14 +31,24 @@ namespace Gui {
         virtual void update(void) = 0;
     };
 
-    class Panel: public ElementBase{
+    class Taskbar : public ElementBase {
+    public:
+        Taskbar(int x, int y, int width, int height);
+        void update() override;
+    };
+
+    class Panel: public ElementBase {
     public:
         bool hasBorders;
         Color borderColor;
+        std::vector<ElementBase*> elements;
+        Taskbar* taskbar;
 
-        Panel(float x, float y);
+        Panel(int x, int y, int width, int height);
+        Panel(int x, int y);
         explicit Panel(Vector2 pos);
 
+        void addElement(ElementBase* element);
         void update(void) override;
     };
 
@@ -64,20 +74,6 @@ namespace Gui {
 
         Button(Vector2 pos, Vector2 dimension);
 
-        bool checkColor(Color newColor);
-        void update(void) override;
-    };
-
-    class DropDown : public Button {
-    public:
-        std::vector<Button*> elements;
-        bool unfolded;
-        Button* active;
-
-        DropDown(Vector2 pos, Vector2 dimension);
-        ~DropDown(void);
-
-        void addElement(const char* value);
         void update(void) override;
     };
 
@@ -105,12 +101,13 @@ namespace Gui {
     extern std::vector<ElementBase*> elements;
     extern Font textFont;
 
+    Button* createButton(int x, int y, int width, int height);
     Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/
     Window* createWindow(int width, int height, const char* title);
 
     void renderElements(void);
     void initialise(void);
     void cleanUp(void);
-
+    bool checkColor(Color first, Color second);
 }
 #endif //NIMBLEGUI_BASEELEMENT_H
