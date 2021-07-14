@@ -5,7 +5,6 @@
 #include <vector>
 #include <memory>
 #include "raylib.h"
-//#include "Input.h"
 
 namespace Gui {
 
@@ -30,7 +29,6 @@ namespace Gui {
 
         ElementBase(void); /** Initialise every Attribute with fixed default values, which will avoid a lot of potential errors and annoying bug searches  **/
         virtual void update(void) = 0;
-
     };
 
     class Panel: public ElementBase{
@@ -49,6 +47,7 @@ namespace Gui {
         const char* text;
         int textSize;
 
+        explicit Label(const char* text);
         Label(float x, float y, const char* text);
         Label(Vector2 pos, const char* text);
 
@@ -75,8 +74,10 @@ namespace Gui {
         bool unfolded;
 
         DropDown(Vector2 pos, Vector2 dimension);
+        ~DropDown(void);
 
         void addElement(const char* value);
+        void update(void) override;
     };
 
     class Window: public ElementBase{
@@ -88,29 +89,28 @@ namespace Gui {
         Window(float width, float height, const char* title); /** On each Constructor of Widgets/Elements make sure to also set its proper ElementType  **/
         Window(Vector2 dimension, const char* title);
 
+
         void addElement(ElementBase* element); /** Careful before adding with certain Values - since Positions like x,y of a child inside a container like window are relative which is why a Button(10,10) is not on the left top corner of the program but on the parenting/enclosing container  **/
         void updateElements(void);
 
 
         void update(void) override; /** Could possible just call updateElements, after updating its own graphics **/
-
+        void close(void);
     private:
         std::vector<ElementBase*> elements;
 
     };
 
-    std::vector<ElementBase*> elements;
+    extern std::vector<ElementBase*> elements;
 
-    Font textFont;
+    extern Font textFont;
 
     Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/
+    Window* createWindow(int width, int height, const char* title);
 
     void renderElements(void);
     void initialise(void);
+    void cleanUp(void);
 
 }
 #endif //NIMBLEGUI_BASEELEMENT_H
-
-
-
-

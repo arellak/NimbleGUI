@@ -2,25 +2,25 @@
 #include "elements/BaseElement.h"
 #include "elements/Input.h"
 
-static Gui::Window window();
 
 int main() {
-    InitWindow(800, 600, "NimbleGUI");
-    SetTargetFPS(25); /** Lower the Framerate, which makes debugging and testing much easier with UIs **/
+    Gui::Window* window = Gui::createWindow(800, 600, "NimbleGUI");
+    window->color = DARKGRAY;
 
     Gui::initialise();
 
     while(!(WindowShouldClose())) {
         BeginDrawing();
-        ClearBackground(DARKGRAY);
 
+        window->update();
         Gui::renderElements();
-        // Input::handle();
+        Input::handle();
 
         EndDrawing();
     }
 
-    CloseWindow();
+    window->close();
+    Gui::cleanUp();
 
     return 0;
 }

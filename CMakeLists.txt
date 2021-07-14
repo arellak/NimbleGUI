@@ -12,7 +12,6 @@ file(COPY ${resources} DESTINATION "${CMAKE_BINARY_DIR}/resources")
 add_executable(TESTING
         src/main.cpp
         src/elements/BaseElement.cpp src/elements/BaseElement.h
-        src/elements/ElementManager.h
         src/elements/Input.cpp src/elements/Input.h)
 
 target_link_libraries(TESTING raylib)

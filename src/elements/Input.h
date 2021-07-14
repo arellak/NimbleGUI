@@ -6,9 +6,10 @@
 #include "BaseElement.h"
 
 namespace Input {
-    std::vector<Rectangle*> ui_collision;
-    Gui::ElementBase* focused;
-    bool dragging = false;
+    extern std::vector<Rectangle*> ui_collision;
+    extern std::vector<Gui::Window*> windows;
+    extern Gui::ElementBase* focused;
+    extern bool dragging;
 
     void registerContainer(Gui::Window* window);
     void registr(Gui::ElementBase &element);
