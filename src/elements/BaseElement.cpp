@@ -13,13 +13,14 @@ Gui::ElementBase::ElementBase(void) {
     type = ElementType::BASE;
 }
 
-Gui::Taskbar::Taskbar(int x, int y, int width, int height) : ElementBase() {
+Gui::TitleBar::TitleBar(int x, int y, int width) : ElementBase() {
+    height = 20;
     pos = Vector2{(float) x, (float) y};
-    dimension = Vector2{(float) width, (float) height/10};
-    type = ElementType::TASKBAR;
+    dimension = Vector2{(float) width, (float) height};
+    type = ElementType::TITLEBAR;
 }
 
-void Gui::Taskbar::update(void) {
+void Gui::TitleBar::update(void) {
     if(visible) {
         DrawRectangle((int) pos.x, (int) (pos.y - dimension.y), (int) dimension.x, (int) dimension.y, color);
     }
@@ -31,7 +32,7 @@ Gui::Panel::Panel(int x, int y, int width, int height) : ElementBase() {
     hasBorders = false;
     borderColor = WHITE;
     type = ElementType::PANEL;
-    taskbar = new Taskbar((int) pos.x, (int) pos.y, (int) dimension.x, (int) dimension.y);
+    titleBar = new TitleBar((int) pos.x, (int) pos.y, (int) dimension.x);
 }
 
 Gui::Panel::Panel(int x, int y) : Panel(x, y, 0, 0){
@@ -74,7 +75,7 @@ void Gui::Panel::update(void) {
             element->update();
         }
 
-        taskbar->update();
+        titleBar->update();
     }
 }
 
@@ -158,20 +159,21 @@ void Gui::initialise(void) {
 
 Gui::Button* Gui::createButton(int x, int y, int width, int height) {
     auto* button = new Button(Vector2{(float) x, (float) y}, Vector2{(float) width, (float) height});
+    elements.push_back(button);
     Input::registr(*button);
-
     return button;
 }
 
 Gui::Panel* Gui::createPanel(int x, int y, int width, int height) {
     auto* panel = new Panel(x, y, width, height);
+    elements.push_back(panel);
     Input::registr(*panel);
     return panel;
 }
 
 Gui::Window* Gui::createWindow(int width, int height, const char* title) {
-    // std::shared_ptr<Window> window = std::make_shared<Window>(width, height, title);
     auto* window = new Window((float) width, (float) height, title);
+    // elements.push_back(window);
     Input::registerContainer(window);
     return window;
 }
@@ -200,4 +202,17 @@ bool Gui::checkColor(Color first, Color second) {
     unsigned char newB = second.b;
 
     return (oldR == newR) && (oldG == newG) && (oldB == newB);
+}
+
+Gui::ElementBase* Gui::getElementByPos(Vector2 pos) {
+    for(auto &element : elements) {
+        printf("Element: {%f, %f, %f, %f}, MousePos: {%f, %f}\n", element->pos.x, element->pos.y, element->dimension.x, element->dimension.y, pos.x, pos.y);
+        bool inX = pos.x < (element->pos.x + element->dimension.x) && pos.x > element->pos.x;
+
+        if(((pos.x <= element->pos.x + element->dimension.x) && (pos.x >= element->pos.x))
+            && ((pos.y <= element->pos.y + element->dimension.y) && (pos.y >= element->pos.y))) {
+            return element;
+        }
+    }
+    return nullptr;
 }

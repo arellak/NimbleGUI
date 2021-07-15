@@ -12,7 +12,7 @@ namespace Gui {
         WINDOW = 0,
         BUTTON = 1,
         LABEL = 2,
-        TASKBAR = 3,
+        TITLEBAR = 3,
         PANEL = 4,
         BASE = 5
     };
@@ -31,9 +31,10 @@ namespace Gui {
         virtual void update(void) = 0;
     };
 
-    class Taskbar : public ElementBase {
+    class TitleBar : public ElementBase {
     public:
-        Taskbar(int x, int y, int width, int height);
+        int height;
+        TitleBar(int x, int y, int width);
         void update() override;
     };
 
@@ -42,7 +43,7 @@ namespace Gui {
         bool hasBorders;
         Color borderColor;
         std::vector<ElementBase*> elements;
-        Taskbar* taskbar;
+        TitleBar* titleBar;
 
         Panel(int x, int y, int width, int height);
         Panel(int x, int y);
@@ -109,5 +110,7 @@ namespace Gui {
     void initialise(void);
     void cleanUp(void);
     bool checkColor(Color first, Color second);
+    extern ElementBase* getElementByPos(Vector2 pos);
+
 }
 #endif //NIMBLEGUI_BASEELEMENT_H
