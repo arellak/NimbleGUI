@@ -72,6 +72,7 @@ namespace Gui {
     class Button : public ElementBase {
     public:
         Label text = Label(Vector2{}, "");
+        Vector2 offset;
 
         Button(Vector2 pos, Vector2 dimension);
 

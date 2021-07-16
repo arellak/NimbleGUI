@@ -8,13 +8,16 @@ namespace Input {
     extern std::vector<Rectangle*> ui_collision;
     extern std::vector<Gui::Window*> windows;
     extern Gui::ElementBase* focused;
+    extern Rectangle* focusedRect;
     extern bool dragging;
+
+    Rectangle* getRectangleByPos(Vector2 &pos);
 
     void registerContainer(Gui::Window* window);
     void registr(Gui::ElementBase &element);
     void handle();
-    void dragElement();
-    void checkCollisions();
+    void dragElement(Vector2 mousePos);
+    void checkCollisions(Vector2 mousePos);
 }
 
 

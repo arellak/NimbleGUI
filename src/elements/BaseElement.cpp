@@ -104,6 +104,7 @@ Gui::Button::Button(Vector2 pos, Vector2 dimension) : ElementBase() {
     text = Label(pos, "");
     this->pos = pos;
     this->dimension = dimension;
+    this->offset = pos;
 }
 
 void Gui::Button::update(void) {
@@ -206,11 +207,11 @@ bool Gui::checkColor(Color first, Color second) {
 
 Gui::ElementBase* Gui::getElementByPos(Vector2 pos) {
     for(auto &element : elements) {
-        printf("Element: {%f, %f, %f, %f}, MousePos: {%f, %f}\n", element->pos.x, element->pos.y, element->dimension.x, element->dimension.y, pos.x, pos.y);
-        bool inX = pos.x < (element->pos.x + element->dimension.x) && pos.x > element->pos.x;
+        // printf("Element: {%f, %f, %f, %f}, MousePos: {%f, %f}\n", element->pos.x, element->pos.y, element->dimension.x, element->dimension.y, pos.x, pos.y);
+        bool inX = (pos.x <= element->pos.x + element->dimension.x) && (pos.x >= element->pos.x);
+        bool inY = (pos.y <= element->pos.y + element->dimension.y) && (pos.y >= element->pos.y);
 
-        if(((pos.x <= element->pos.x + element->dimension.x) && (pos.x >= element->pos.x))
-            && ((pos.y <= element->pos.y + element->dimension.y) && (pos.y >= element->pos.y))) {
+        if(inX && inY) {
             return element;
         }
     }
