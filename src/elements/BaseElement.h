@@ -71,12 +71,17 @@ namespace Gui {
      */
     class Button : public ElementBase {
     public:
+        typedef void (*ClickAction)(Button* button);
+
+        ClickAction action;
+
         Label text = Label(Vector2{}, "");
         Vector2 offset;
 
         Button(Vector2 pos, Vector2 dimension);
 
         void update(void) override;
+        void addAction(ClickAction action);
     };
 
     class Window: public ElementBase{

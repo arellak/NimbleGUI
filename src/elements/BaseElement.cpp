@@ -114,6 +114,10 @@ void Gui::Button::update(void) {
     }
 }
 
+void Gui::Button::addAction(ClickAction clickAction) {
+    action = clickAction;
+}
+
 Gui::Window::Window(float width, float height, const char* title) {
     dimension = Vector2{width, height};
     pos = Vector2{0, 0};

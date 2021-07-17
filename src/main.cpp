@@ -10,6 +10,9 @@ int main() {
     Gui::Button* button = Gui::createButton(50, 30, 90, 50);
     button->color = YELLOW;
     button->text = Gui::Label(button->pos, "Button");
+    button->addAction([](Gui::Button* button) {
+        printf("Click!\n");
+    });
 
     Gui::Panel* panel = Gui::createPanel(200, 50, 300, 300);
     panel->color = GREEN;
@@ -27,6 +30,10 @@ int main() {
 
     while(!(WindowShouldClose())) {
         BeginDrawing();
+
+        if(IsKeyPressed(KEY_SPACE)) {
+            panel->visible = !panel->visible;
+        }
 
         window->update();
         Gui::renderElements();
