@@ -7,11 +7,25 @@ int main() {
     Gui::Window* window = Gui::createWindow(800, 600, "NimbleGUI");
     window->color = DARKGRAY;
 
+
+    Gui::initialise();
     Gui::Button* button = Gui::createButton(50, 30, 90, 50);
     button->color = YELLOW;
-    button->text = Gui::Label(button->pos, "Button");
+    button->updateText("Button");
     button->addAction([](Gui::Button* button) {
         printf("Click!\n");
+    });
+
+    Gui::Button* test = Gui::createButton(120, 90, 120, 50);
+    test->color = RED;
+    test->text.textSize = 30;
+    test->updateText("Submit");
+    test->addAction([](Gui::Button* button) {
+        if(Gui::checkColor(button->color, RED)) {
+            button->color = PINK;
+        } else if(Gui::checkColor(button->color, PINK)) {
+            button->color = RED;
+        }
     });
 
     Gui::Panel* panel = Gui::createPanel(200, 50, 300, 300);
@@ -22,11 +36,10 @@ int main() {
 
 
     panel->addElement(button);
+    panel->addElement(test);
 
     window->addElement(panel);
     window->addElement(second);
-
-    Gui::initialise();
 
     while(!(WindowShouldClose())) {
         BeginDrawing();

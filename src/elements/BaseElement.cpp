@@ -79,23 +79,23 @@ void Gui::Panel::update(void) {
     }
 }
 
-Gui::Label::Label(const char* text) : Label(0, 0, text){
+Gui::Label::Label(std::string text) : Label(0, 0, text){
 }
 
-Gui::Label::Label(float x, float y, const char *text) : ElementBase() {
+Gui::Label::Label(float x, float y, std::string text) : ElementBase() {
     pos = Vector2{x, y};
     textSize = 20;
     type = ElementType::LABEL;
-    this->text = text;
+    this->value = text;
 }
 
-Gui::Label::Label(Vector2 pos, const char* text) : Label(pos.x, pos.y, text){
+Gui::Label::Label(Vector2 pos, std::string text) : Label(pos.x, pos.y, text){
 
 }
 
 void Gui::Label::update(void) {
     if(visible) {
-        DrawTextEx(textFont, text, pos, (float) textSize, 1, color);
+        DrawTextEx(textFont, value.c_str(), pos, (float) textSize, 1, color);
     }
 }
 
@@ -114,11 +114,37 @@ void Gui::Button::update(void) {
     }
 }
 
+void Gui::Button::cutText(void) {
+    Vector2 textSize = MeasureTextEx(textFont, text.value.c_str(), text.textSize, 1);
+
+    if(textSize.y > dimension.y) {
+        text.value = "...";
+        text.textSize = 25;
+        return;
+    }
+
+    for(int i = 0; i < text.value.size(); i++) {
+        if(textSize.x <= dimension.x) {
+            break;
+        }
+
+        text.value = text.value.substr(0, text.value.size() - i);
+        textSize = MeasureTextEx(textFont, text.value.c_str(), text.textSize, 1);
+    }
+}
+
+void Gui::Button::updateText(std::string newText) {
+    text.value = newText;
+    text.pos = pos;
+
+    cutText();
+}
+
 void Gui::Button::addAction(ClickAction clickAction) {
     action = clickAction;
 }
 
-Gui::Window::Window(float width, float height, const char* title) {
+Gui::Window::Window(float width, float height, std::string title) {
     dimension = Vector2{width, height};
     pos = Vector2{0, 0};
     type = ElementType::WINDOW;
@@ -127,11 +153,11 @@ Gui::Window::Window(float width, float height, const char* title) {
     borderColor = BLACK;
     color = DARKGRAY;
 
-    InitWindow((int) dimension.x, (int) dimension.y, title);
+    InitWindow((int) dimension.x, (int) dimension.y, title.c_str());
     SetTargetFPS(25);
 }
 
-Gui::Window::Window(Vector2 pos, const char* title) : Window(pos.x, pos.y, title) {
+Gui::Window::Window(Vector2 pos, std::string title) : Window(pos.x, pos.y, title) {
 
 }
 
@@ -176,7 +202,7 @@ Gui::Panel* Gui::createPanel(int x, int y, int width, int height) {
     return panel;
 }
 
-Gui::Window* Gui::createWindow(int width, int height, const char* title) {
+Gui::Window* Gui::createWindow(int width, int height, std::string title) {
     auto* window = new Window((float) width, (float) height, title);
     // elements.push_back(window);
     Input::registerContainer(window);
@@ -184,11 +210,6 @@ Gui::Window* Gui::createWindow(int width, int height, const char* title) {
 }
 
 void Gui::renderElements(void) {
-    /*
-    for(auto &element : elements) {
-
-    }
-    */
 }
 
 void Gui::cleanUp(void) {

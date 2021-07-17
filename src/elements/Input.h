@@ -15,7 +15,7 @@ namespace Input {
 
     void registerContainer(Gui::Window* window);
     void registr(Gui::ElementBase &element);
-    void handle();
+    void handle(void);
     void dragElement(Vector2 mousePos);
     void checkCollisions(Vector2 mousePos);
 }

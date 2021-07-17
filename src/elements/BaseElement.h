@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <memory>
+#include <string>
 #include "raylib.h"
 
 namespace Gui {
@@ -35,7 +35,7 @@ namespace Gui {
     public:
         int height;
         TitleBar(int x, int y, int width);
-        void update() override;
+        void update(void) override;
     };
 
     class Panel: public ElementBase {
@@ -55,12 +55,12 @@ namespace Gui {
 
     class Label: public ElementBase{
     public:
-        const char* text;
+        std::string value;
         int textSize;
 
-        explicit Label(const char* text);
-        Label(float x, float y, const char* text);
-        Label(Vector2 pos, const char* text);
+        explicit Label(std::string text);
+        Label(float x, float y, std::string text);
+        Label(Vector2 pos, std::string text);
 
         void update(void) override;
     };
@@ -82,16 +82,18 @@ namespace Gui {
 
         void update(void) override;
         void addAction(ClickAction action);
+        void cutText(void);
+        void updateText(std::string newText);
     };
 
     class Window: public ElementBase{
     public:
         bool hasBorders;
         Color borderColor;
-        const char* title;
+        std::string title;
 
-        Window(float width, float height, const char* title); /** On each Constructor of Widgets/Elements make sure to also set its proper ElementType  **/
-        Window(Vector2 dimension, const char* title);
+        Window(float width, float height, std::string title); /** On each Constructor of Widgets/Elements make sure to also set its proper ElementType  **/
+        Window(Vector2 dimension, std::string title);
 
 
         void addElement(ElementBase* element); /** Careful before adding with certain Values - since Positions like x,y of a child inside a container like window are relative which is why a Button(10,10) is not on the left top corner of the program but on the parenting/enclosing container  **/
@@ -110,7 +112,7 @@ namespace Gui {
 
     Button* createButton(int x, int y, int width, int height);
     Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/
-    Window* createWindow(int width, int height, const char* title);
+    Window* createWindow(int width, int height, std::string title);
 
     void renderElements(void);
     void initialise(void);
