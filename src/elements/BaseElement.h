@@ -14,8 +14,7 @@ namespace Gui {
         BUTTON = 2,
         LABEL = 3,
         TITLEBAR = 4,
-        PANEL = 5,
-        BORDER = 6
+        PANEL = 5
     };
 
     class ElementBase {
@@ -41,7 +40,6 @@ namespace Gui {
 
     class Panel: public ElementBase {
     public:
-        // TODO implement borders
         bool hasBorders;
         Color borderColor;
         int borderThickness;
@@ -58,10 +56,17 @@ namespace Gui {
         void updateBorder(void);
     };
 
-    class Label: public ElementBase{
+
+    // TODO add Panels for Labels (pnael size fits to the size of the Label)
+    class Label: public ElementBase {
     public:
         std::string value;
         int textSize;
+
+        Panel* textPanel;
+        bool hasPanel;
+
+        Vector2 offset;
 
         explicit Label(std::string text);
         Label(float x, float y, std::string text);
@@ -115,9 +120,11 @@ namespace Gui {
     extern std::vector<ElementBase*> elements;
     extern Font textFont;
 
-    Button* createButton(int x, int y, int width, int height);
-    Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/
     Window* createWindow(int width, int height, std::string title);
+    Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/
+    Button* createButton(int x, int y, int width, int height);
+    Label* createLabel(int x, int y, std::string value);
+
 
     void renderElements(void);
     void initialise(void);

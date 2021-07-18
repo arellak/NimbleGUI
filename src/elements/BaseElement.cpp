@@ -51,7 +51,7 @@ void Gui::Panel::addElement(ElementBase *element) {
 
     // Check if given element is in the boundaries of the Panel
     if(elementX > panelWidth || elementX < 0 || elementY > panelHeight || elementY < 0) {
-        // TODO add some kind of error message
+        printf("The element you're trying to add is outside the Panel.\n");
         return;
     }
 
@@ -89,7 +89,9 @@ void Gui::Panel::updateBorder(void) {
 
     for(auto &child : elements) {
         Rectangle childBorder{child->pos.x, child->pos.y, child->dimension.x, child->dimension.y};
-        DrawRectangleLinesEx(childBorder, borderThickness, borderColor);
+        if(child->type != ElementType::LABEL) {
+            DrawRectangleLinesEx(childBorder, borderThickness, borderColor);
+        }
     }
 }
 
@@ -101,6 +103,8 @@ Gui::Label::Label(float x, float y, std::string text) : ElementBase() {
     textSize = 20;
     type = ElementType::LABEL;
     value = text;
+    hasPanel = false;
+    offset = pos;
 }
 
 Gui::Label::Label(Vector2 pos, std::string text) : Label(pos.x, pos.y, text){
@@ -109,6 +113,13 @@ Gui::Label::Label(Vector2 pos, std::string text) : Label(pos.x, pos.y, text){
 
 void Gui::Label::update(void) {
     if(visible) {
+        if(hasPanel) {
+            textPanel = Gui::createPanel(pos.x, pos.y, dimension.x, dimension.y);
+            textPanel->titleBar->visible = false;
+            textPanel->color = ColorFromHSV(10, 100, 90);
+            textPanel->update();
+        }
+
         DrawTextEx(textFont, value.c_str(), pos, (float) textSize, 1, color);
     }
 }
@@ -202,11 +213,11 @@ void Gui::initialise(void) {
     textFont = LoadFont("resources/fonts/Monoid.ttf"); // TODO load font from some kind of config?
 }
 
-Gui::Button* Gui::createButton(int x, int y, int width, int height) {
-    auto* button = new Button(Vector2{(float) x, (float) y}, Vector2{(float) width, (float) height});
-    elements.push_back(button);
-    Input::registr(*button);
-    return button;
+Gui::Window* Gui::createWindow(int width, int height, std::string title) {
+    auto* window = new Window((float) width, (float) height, title);
+    // elements.push_back(window);
+    Input::registerContainer(window);
+    return window;
 }
 
 Gui::Panel* Gui::createPanel(int x, int y, int width, int height) {
@@ -216,11 +227,20 @@ Gui::Panel* Gui::createPanel(int x, int y, int width, int height) {
     return panel;
 }
 
-Gui::Window* Gui::createWindow(int width, int height, std::string title) {
-    auto* window = new Window((float) width, (float) height, title);
-    // elements.push_back(window);
-    Input::registerContainer(window);
-    return window;
+Gui::Button* Gui::createButton(int x, int y, int width, int height) {
+    auto* button = new Button(Vector2{(float) x, (float) y}, Vector2{(float) width, (float) height});
+    elements.push_back(button);
+    Input::registr(*button);
+    return button;
+}
+
+Gui::Label* Gui::createLabel(int x, int y, std::string value) {
+    auto* label = new Label((float) x, (float) y, value);
+    label->dimension = MeasureTextEx(textFont, value.c_str(), label->textSize, 1);
+    label->dimension.x += 2.5;
+    elements.push_back(label);
+    Input::registr(*label);
+    return label;
 }
 
 void Gui::renderElements(void) {

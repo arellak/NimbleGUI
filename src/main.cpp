@@ -9,6 +9,7 @@ int main() {
 
 
     Gui::initialise();
+
     Gui::Button* button = Gui::createButton(50, 30, 90, 50);
     button->color = YELLOW;
     button->updateText("Button");
@@ -36,9 +37,13 @@ int main() {
     Gui::Panel* second = Gui::createPanel(300, 500, 220, 90);
     second->color = DARKBLUE;
 
+    Gui::Label* label = Gui::createLabel(10, 10, "Submit my ass");
+    label->hasPanel = true;
 
     panel->addElement(button);
     panel->addElement(test);
+
+    second->addElement(label);
 
     window->addElement(panel);
     window->addElement(second);

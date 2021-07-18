@@ -26,21 +26,19 @@ void Input::dragElement(Vector2 mousePos) {
             focusedRect->y = mouse.y;
         }
 
-        // cast the focused element to a panel
-        auto* panel = dynamic_cast<Gui::Panel*>(focused);
-
         // check if the cast succeeded
-        if(panel != nullptr) {
+        if(focused->type == Gui::ElementType::PANEL) {
+            // cast focused element to panel
+            auto* panel = dynamic_cast<Gui::Panel*>(focused);
+
             // update the position of the titlebar to the newly calculated mousePos
             panel->titleBar->pos = panel->pos;
 
             // go over each child of the panel
             for(auto &child : panel->elements) {
-                // cast the child to a button
-                auto *button = dynamic_cast<Gui::Button*>(child);
-
                 // check if the cast succeeded
-                if(button != nullptr) {
+                if(child->type == Gui::ElementType::BUTTON) {
+                    auto* button = dynamic_cast<Gui::Button*>(child);
                     // update the buttons position relative to its parent panel
                     button->pos = Vector2{
                         (panel->pos.x + button->offset.x),
@@ -48,10 +46,18 @@ void Input::dragElement(Vector2 mousePos) {
                     };
 
                     // also update the position of the label of the button
-                    // button->text.pos = button->pos;
                     button->text.pos.x = button->pos.x + (button->text.dimension.x/5);
                     button->text.pos.y = button->pos.y + (button->text.dimension.y/5);
                 }
+
+                if(child->type == Gui::ElementType::LABEL) {
+                    auto* label = dynamic_cast<Gui::Label*>(child);
+                    label->pos = Vector2{
+                            (panel->pos.x + label->offset.x),
+                            (panel->pos.y + label->offset.y)
+                    };
+                }
+
             }
         }
     }
@@ -135,11 +141,12 @@ void Input::checkCollisions(Vector2 mousePos){
 
                 // go over each child of the panel
                 for(auto &child : panel->elements) {
-                    // cast the child to a button pointer
-                    auto* button = dynamic_cast<Gui::Button*>(child);
 
                     // check if the child actually have been casted to a button pointer
-                    if(button != nullptr) {
+                    if(child->type == Gui::ElementType::BUTTON) {
+                        // cast the child to a button pointer
+                        auto* button = dynamic_cast<Gui::Button*>(child);
+
                         // two bools that hold values, if the mouseClick was in the area of a button
                         bool inButtonX = (mousePos.x <= button->pos.x + button->dimension.x) && (mousePos.x > button->pos.x);
                         bool inButtonY = (mousePos.y <= button->pos.y + button->dimension.y) && (mousePos.y > button->pos.y);
@@ -154,13 +161,10 @@ void Input::checkCollisions(Vector2 mousePos){
                             dragging = false;
                         }
                     }
+
                 }
 
-            } else {
-                // the clicked element was no panel? set the dragging variable to false
-                dragging = false;
             }
-
         }
     } else {
         // if you click/release and there is focused element, it should be set to nullptr/reset itself
