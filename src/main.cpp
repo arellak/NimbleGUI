@@ -30,8 +30,8 @@ int main() {
 
     Gui::Panel* panel = Gui::createPanel(200, 50, 300, 300);
     panel->color = GREEN;
-    panel->borderColor = GRAY;
-    panel->borderThickness = 5;
+    panel->borderColor = BLACK;
+    panel->borderThickness = 3;
 
     Gui::Panel* second = Gui::createPanel(300, 500, 220, 90);
     second->color = DARKBLUE;

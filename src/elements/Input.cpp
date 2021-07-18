@@ -48,7 +48,9 @@ void Input::dragElement(Vector2 mousePos) {
                     };
 
                     // also update the position of the label of the button
-                    button->text.pos = button->pos;
+                    // button->text.pos = button->pos;
+                    button->text.pos.x = button->pos.x + (button->text.dimension.x/5);
+                    button->text.pos.y = button->pos.y + (button->text.dimension.y/5);
                 }
             }
         }

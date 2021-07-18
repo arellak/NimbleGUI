@@ -30,7 +30,7 @@ Gui::Panel::Panel(int x, int y, int width, int height) : ElementBase() {
     pos = Vector2{(float) x, (float) y};
     dimension = Vector2{(float) width, (float) height};
     hasBorders = true;
-    borderColor = WHITE;
+    borderColor = BLACK;
     borderThickness = 2;
     type = ElementType::PANEL;
     titleBar = new TitleBar((int) pos.x, (int) pos.y, (int) dimension.x);
@@ -61,8 +61,8 @@ void Gui::Panel::addElement(ElementBase *element) {
 
     if(element->type == ElementType::BUTTON) {
         auto* button = dynamic_cast<Button*>(element);
-        button->text.pos.x += pos.x;
-        button->text.pos.y += pos.y;
+        button->text.pos.x = button->pos.x + (button->text.dimension.x/5);
+        button->text.pos.y = button->pos.y + (button->text.dimension.y/5);
     }
 
     elements.push_back(element);
@@ -86,6 +86,11 @@ void Gui::Panel::update(void) {
 void Gui::Panel::updateBorder(void) {
     Rectangle rec{pos.x, pos.y, dimension.x, dimension.y};
     DrawRectangleLinesEx(rec, borderThickness, borderColor);
+
+    for(auto &child : elements) {
+        Rectangle childBorder{child->pos.x, child->pos.y, child->dimension.x, child->dimension.y};
+        DrawRectangleLinesEx(childBorder, borderThickness, borderColor);
+    }
 }
 
 Gui::Label::Label(std::string text) : Label(0, 0, text){
