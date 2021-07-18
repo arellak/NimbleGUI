@@ -30,6 +30,8 @@ int main() {
 
     Gui::Panel* panel = Gui::createPanel(200, 50, 300, 300);
     panel->color = GREEN;
+    panel->borderColor = GRAY;
+    panel->borderThickness = 5;
 
     Gui::Panel* second = Gui::createPanel(300, 500, 220, 90);
     second->color = DARKBLUE;
@@ -47,7 +49,6 @@ int main() {
         if(IsKeyPressed(KEY_SPACE)) {
             panel->visible = !panel->visible;
         }
-
         window->update();
         Gui::renderElements();
         Input::handle();

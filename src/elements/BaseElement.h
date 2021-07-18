@@ -9,12 +9,13 @@
 namespace Gui {
 
     enum ElementType{
-        WINDOW = 0,
-        BUTTON = 1,
-        LABEL = 2,
-        TITLEBAR = 3,
-        PANEL = 4,
-        BASE = 5
+        BASE = 0,
+        WINDOW = 1,
+        BUTTON = 2,
+        LABEL = 3,
+        TITLEBAR = 4,
+        PANEL = 5,
+        BORDER = 6
     };
 
     class ElementBase {
@@ -40,8 +41,11 @@ namespace Gui {
 
     class Panel: public ElementBase {
     public:
+        // TODO implement borders
         bool hasBorders;
         Color borderColor;
+        int borderThickness;
+
         std::vector<ElementBase*> elements;
         TitleBar* titleBar;
 
@@ -51,6 +55,7 @@ namespace Gui {
 
         void addElement(ElementBase* element);
         void update(void) override;
+        void updateBorder(void);
     };
 
     class Label: public ElementBase{

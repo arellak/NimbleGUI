@@ -29,8 +29,9 @@ void Gui::TitleBar::update(void) {
 Gui::Panel::Panel(int x, int y, int width, int height) : ElementBase() {
     pos = Vector2{(float) x, (float) y};
     dimension = Vector2{(float) width, (float) height};
-    hasBorders = false;
+    hasBorders = true;
     borderColor = WHITE;
+    borderThickness = 2;
     type = ElementType::PANEL;
     titleBar = new TitleBar((int) pos.x, (int) pos.y, (int) dimension.x);
 }
@@ -76,7 +77,15 @@ void Gui::Panel::update(void) {
         }
 
         titleBar->update();
+        if(hasBorders) {
+            updateBorder();
+        }
     }
+}
+
+void Gui::Panel::updateBorder(void) {
+    Rectangle rec{pos.x, pos.y, dimension.x, dimension.y};
+    DrawRectangleLinesEx(rec, borderThickness, borderColor);
 }
 
 Gui::Label::Label(std::string text) : Label(0, 0, text){
@@ -86,7 +95,7 @@ Gui::Label::Label(float x, float y, std::string text) : ElementBase() {
     pos = Vector2{x, y};
     textSize = 20;
     type = ElementType::LABEL;
-    this->value = text;
+    value = text;
 }
 
 Gui::Label::Label(Vector2 pos, std::string text) : Label(pos.x, pos.y, text){
