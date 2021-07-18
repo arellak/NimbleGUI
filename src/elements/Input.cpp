@@ -9,6 +9,11 @@ bool Input::dragging = false;
 
 Vector2 offset{};
 
+/*
+ * TODO error: wenn obere linke Kante von Panel überlappt mit einem anderem Panel, dann kann man das erste Panel nicht bewegen
+ *
+ */
+
 // in this method the actual dragging is happening
 void Input::dragElement(Vector2 mousePos) {
     // should the current element be dragged?(dragging=true) and is the focused element even visible?

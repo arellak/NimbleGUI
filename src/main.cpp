@@ -2,7 +2,6 @@
 #include "elements/BaseElement.h"
 #include "elements/Input.h"
 
-
 int main() {
     Gui::Window* window = Gui::createWindow(800, 600, "NimbleGUI");
     window->color = DARKGRAY;
@@ -51,9 +50,6 @@ int main() {
     while(!(WindowShouldClose())) {
         BeginDrawing();
 
-        if(IsKeyPressed(KEY_SPACE)) {
-            panel->visible = !panel->visible;
-        }
         window->update();
         Gui::renderElements();
         Input::handle();
