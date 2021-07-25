@@ -14,7 +14,8 @@ namespace Gui {
         BUTTON = 2,
         LABEL = 3,
         TITLEBAR = 4,
-        PANEL = 5
+        PANEL = 5,
+        TEXTBOX = 6
     };
 
     class ElementBase {
@@ -23,9 +24,11 @@ namespace Gui {
 
         Vector2 dimension;
         Vector2 pos;
+        Vector2 offset;
 
         Color color;
         bool visible;
+        Rectangle body;
 
         ElementBase(void); /** Initialise every Attribute with fixed default values, which will avoid a lot of potential errors and annoying bug searches  **/
         virtual void update(void) = 0;
@@ -66,8 +69,6 @@ namespace Gui {
         Panel* textPanel;
         bool hasPanel;
 
-        Vector2 offset;
-
         explicit Label(std::string text);
         Label(float x, float y, std::string text);
         Label(Vector2 pos, std::string text);
@@ -86,7 +87,6 @@ namespace Gui {
         ClickAction action;
 
         Label text = Label(Vector2{}, "");
-        Vector2 offset;
 
         Button(Vector2 pos, Vector2 dimension);
 
@@ -96,7 +96,23 @@ namespace Gui {
         void updateText(std::string newText);
     };
 
-    class Window: public ElementBase{
+    class Textbox : public ElementBase {
+    public:
+        int textSize;
+
+        std::string name;
+        int letterCount;
+        bool mouseOnText;
+        int framesCounter;
+
+
+        explicit Textbox(Vector2 pos);
+
+        void update() override;
+
+    };
+
+    class Window: public ElementBase {
     public:
         bool hasBorders;
         Color borderColor;
@@ -124,6 +140,7 @@ namespace Gui {
     Panel* createPanel(int x, int y, int width, int height); /** Add Input::Register for automatic registrations **/
     Button* createButton(int x, int y, int width, int height);
     Label* createLabel(int x, int y, std::string value);
+    Textbox* createTextbox(int x, int y, int width, int height, Color color);
 
 
     void renderElements(void);

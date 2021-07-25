@@ -42,25 +42,26 @@ void Input::dragElement(Vector2 mousePos) {
             // go over each child of the panel
             for(auto &child : panel->elements) {
                 // check if the cast succeeded
-                if(child->type == Gui::ElementType::BUTTON) {
-                    auto* button = dynamic_cast<Gui::Button*>(child);
-                    // update the buttons position relative to its parent panel
-                    button->pos = Vector2{
-                        (panel->pos.x + button->offset.x),
-                        (panel->pos.y + button->offset.y)
-                    };
 
-                    // also update the position of the label of the button
-                    button->text.pos.x = button->pos.x + (button->text.dimension.x/5);
-                    button->text.pos.y = button->pos.y + (button->text.dimension.y/5);
-                }
+                switch(child->type) {
+                    default:
+                        child->pos = Vector2{
+                                (panel->pos.x + child->offset.x),
+                                (panel->pos.y + child->offset.y)
+                        };
+                        break;
+                    case Gui::ElementType::BUTTON:
+                        auto* button = dynamic_cast<Gui::Button*>(child);
+                        // update the buttons position relative to its parent panel
+                        button->pos = Vector2{
+                                (panel->pos.x + button->offset.x),
+                                (panel->pos.y + button->offset.y)
+                        };
 
-                if(child->type == Gui::ElementType::LABEL) {
-                    auto* label = dynamic_cast<Gui::Label*>(child);
-                    label->pos = Vector2{
-                            (panel->pos.x + label->offset.x),
-                            (panel->pos.y + label->offset.y)
-                    };
+                        // also update the position of the label of the button
+                        button->text.pos.x = button->pos.x + (button->text.dimension.x/5);
+                        button->text.pos.y = button->pos.y + (button->text.dimension.y/5);
+                        break;
                 }
 
             }

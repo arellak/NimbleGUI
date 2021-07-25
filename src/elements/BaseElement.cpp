@@ -7,10 +7,10 @@ std::vector<Gui::ElementBase*> Gui::elements;
 Gui::ElementBase::ElementBase(void) {
     dimension = Vector2{50, 50};
     pos = Vector2{0, 0};
-
     color = BLACK;
     visible = true;
     type = ElementType::BASE;
+    body = {pos.x, pos.y, dimension.x, dimension.y};
 }
 
 Gui::TitleBar::TitleBar(int x, int y, int width) : ElementBase() {
@@ -18,6 +18,8 @@ Gui::TitleBar::TitleBar(int x, int y, int width) : ElementBase() {
     pos = Vector2{(float) x, (float) y};
     dimension = Vector2{(float) width, (float) height};
     type = ElementType::TITLEBAR;
+    body = {pos.x, pos.y, dimension.x, dimension.y};
+    offset = pos;
 }
 
 void Gui::TitleBar::update(void) {
@@ -34,6 +36,8 @@ Gui::Panel::Panel(int x, int y, int width, int height) : ElementBase() {
     borderThickness = 2;
     type = ElementType::PANEL;
     titleBar = new TitleBar((int) pos.x, (int) pos.y, (int) dimension.x);
+    body = {pos.x, pos.y, dimension.x, dimension.y};
+    offset = pos;
 }
 
 Gui::Panel::Panel(int x, int y) : Panel(x, y, 0, 0){
@@ -104,6 +108,7 @@ Gui::Label::Label(float x, float y, std::string text) : ElementBase() {
     type = ElementType::LABEL;
     value = text;
     hasPanel = false;
+    body = {pos.x, pos.y, dimension.x, dimension.y};
     offset = pos;
 }
 
@@ -129,7 +134,8 @@ Gui::Button::Button(Vector2 pos, Vector2 dimension) : ElementBase() {
     text = Label(pos, "");
     this->pos = pos;
     this->dimension = dimension;
-    this->offset = pos;
+    body = {pos.x, pos.y, dimension.x, dimension.y};
+    offset = pos;
 }
 
 void Gui::Button::update(void) {
@@ -169,6 +175,79 @@ void Gui::Button::addAction(ClickAction clickAction) {
     action = clickAction;
 }
 
+Gui::Textbox::Textbox(Vector2 pos) : ElementBase() {
+    body = {pos.x, pos.y, dimension.x, dimension.y};
+    this->pos = pos;
+    letterCount = 0;
+    textSize = 25;
+    mouseOnText = false;
+    framesCounter = 0;
+    type = ElementType::TEXTBOX;
+    offset = pos;
+}
+
+void Gui::Textbox::update() {
+    Vector2 mousePos = GetMousePosition();
+    bool inTextX = mousePos.x < pos.x + dimension.x && mousePos.x > pos.x;
+    bool inTextY = mousePos.y < pos.y + dimension.y && mousePos.y > pos.y;
+
+    if(inTextX && inTextY) {
+        mouseOnText = true;
+    } else {
+        mouseOnText = false;
+    }
+
+    Vector2 nameSize = MeasureTextEx(textFont, name.c_str(), textSize, 1);
+
+    if(mouseOnText) {
+        SetMouseCursor(MOUSE_CURSOR_IBEAM);
+
+        int key = GetCharPressed();
+
+        while(key > 0) {
+            if((key >= 32) && (key <= 125)) {
+                if(nameSize.x < dimension.x-25) {
+                    name[letterCount] = (char) key;
+                    name[letterCount + 1] = '\0';
+                    letterCount++;
+                }
+            }
+
+            key = GetCharPressed();
+        }
+
+        if(IsKeyPressed(KEY_BACKSPACE)) {
+            letterCount--;
+            if(letterCount < 0) {
+                letterCount = 0;
+            }
+            name[letterCount] = '\0';
+        }
+    } else {
+        SetMouseCursor(MOUSE_CURSOR_DEFAULT);
+    }
+
+    if(mouseOnText) {
+        framesCounter++;
+    } else {
+        framesCounter = 0;
+    }
+
+    // DRAWING THE TEXTBOX
+    DrawRectangle(pos.x, pos.y, dimension.x, dimension.y, color);
+
+    DrawTextEx(textFont, name.c_str(), Vector2{pos.x + 4, pos.y + 12}, textSize, 1, MAROON);
+    if(mouseOnText) {
+        if (((framesCounter / 20) % 2) == 0) {
+            if(nameSize.x < dimension.x-25) {
+                DrawTextEx(textFont, "_", Vector2{pos.x + 6 + MeasureText(name.c_str(), textSize), pos.y + 12},
+                           textSize,
+                           1, MAROON);
+            }
+        }
+    }
+}
+
 Gui::Window::Window(float width, float height, std::string title) {
     dimension = Vector2{width, height};
     pos = Vector2{0, 0};
@@ -177,6 +256,7 @@ Gui::Window::Window(float width, float height, std::string title) {
     hasBorders = false;
     borderColor = BLACK;
     color = DARKGRAY;
+    body = {pos.x, pos.y, dimension.x, dimension.y};
 
     InitWindow((int) dimension.x, (int) dimension.y, title.c_str());
     SetTargetFPS(25);
@@ -241,6 +321,15 @@ Gui::Label* Gui::createLabel(int x, int y, std::string value) {
     elements.push_back(label);
     Input::registr(*label);
     return label;
+}
+
+Gui::Textbox* Gui::createTextbox(int x, int y, int width, int height, Color color) {
+    auto* textbox = new Textbox(Vector2{(float) x, (float) y});
+    textbox->dimension = Vector2{(float) width, (float) height};
+    textbox->color = color;
+    elements.push_back(textbox);
+    Input::registr(*textbox);
+    return textbox;
 }
 
 void Gui::renderElements(void) {
